@@ -24,8 +24,8 @@ import lombok.experimental.FieldDefaults;
 public class Profile {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Long id;
 
 	String firstName;
 
