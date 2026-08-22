@@ -2,17 +2,14 @@ package com.daizuongkk.monagement.entity;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 
 @Table(name = "profiles")
 @Getter
@@ -20,19 +17,18 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class Profile {
+public class Profile extends BaseEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+  private String firstName;
 
-	String firstName;
+  private String lastName;
 
-	String lastName;
+  private String address;
 
-	String address;
+  private LocalDate dob;
 
-	LocalDate dob;
+  @OneToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
 }

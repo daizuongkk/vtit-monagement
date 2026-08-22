@@ -1,6 +1,8 @@
 package com.daizuongkk.monagement.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,7 +11,6 @@ import com.daizuongkk.monagement.dto.response.ApiResponse;
 import com.daizuongkk.monagement.dto.response.AuthenticationResponse;
 import com.daizuongkk.monagement.service.AuthService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -18,8 +19,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
 
-  AuthService authService;
+  private final AuthService authService;
 
+  @PostMapping("/login")
   ResponseEntity<ApiResponse<AuthenticationResponse>> login(@Valid @RequestBody LoginRequest request) {
     var response = authService.login(request);
 

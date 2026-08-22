@@ -9,8 +9,10 @@ import lombok.Getter;
 @Getter
 public class TokenResponse {
 
-	String token;
-	Instant expiresIn;
-	String tokenType;
+  private String token;
+
+  private Instant expiresIn;
+
+  private String tokenType;
 
 }

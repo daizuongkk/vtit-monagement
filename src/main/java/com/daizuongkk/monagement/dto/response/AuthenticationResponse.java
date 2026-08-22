@@ -12,12 +12,12 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthenticationResponse {
 
-	String accessToken;
+  private String accessToken;
 
-	String refreshToken;
+  private String refreshToken;
 
-	Instant expiresIn;
+  private Instant expiresIn;
 
-	@Builder.Default
-	String tokenType = "Bearer";
+  @Builder.Default
+  private String tokenType = "Bearer";
 }
