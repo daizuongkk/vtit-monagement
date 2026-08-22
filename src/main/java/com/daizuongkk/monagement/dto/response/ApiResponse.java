@@ -12,12 +12,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiResponse<T> {
-	int code;
-	Status status;
-	String message;
-	T data;
 
-	public enum Status {
-		SUCCESS, ERROR
-	}
+  private int code;
+
+  private String message;
+
+  private T data;
+
 }

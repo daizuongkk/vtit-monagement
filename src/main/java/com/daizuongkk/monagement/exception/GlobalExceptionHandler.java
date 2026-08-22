@@ -77,11 +77,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleRuntimeException(Exception exception, WebRequest request) {
     ErrorCode error = ErrorCode.UNCATEGORIZED_EXCEPTION;
 
-    ErrorResponse response = ErrorResponse.builder()
-        .code(error.getCode())
-        .message(error.getMessage())
-        .path(request.getDescription(false).replace("uri=", ""))
-        .build();
+    ErrorResponse response = buildErrorCodeResponse(error, request);
     log.error("Unexpected exception occurred: ", exception);
     return ResponseEntity.status(error.getHttpStatus()).body(response);
 
