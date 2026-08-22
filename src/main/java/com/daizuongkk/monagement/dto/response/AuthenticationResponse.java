@@ -11,8 +11,11 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthenticationResponse {
+
 	String accessToken;
+
 	String refreshToken;
+
 	Instant expiresIn;
 
 	@Builder.Default

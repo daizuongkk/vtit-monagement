@@ -25,41 +25,41 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
 
-	String[] PUBLIC_ENPOINTS = { "/auth/login", "/auth/refresh" };
+  String[] PUBLIC_ENPOINTS = { "/auth/login", "/auth/refresh" };
 
-	CustomUserDetailsService userDetailsService;
+  CustomUserDetailsService userDetailsService;
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) {
-		http.csrf(csrf -> csrf.disable())
-				.cors(null)
-				.authorizeHttpRequests(auth -> auth.requestMatchers(PUBLIC_ENPOINTS)
-						.permitAll()
-						.anyRequest()
-						.authenticated())
-				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-				.authenticationManager(authenticationManager());
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) {
+    http.csrf(csrf -> csrf.disable())
+        // .cors(null)
+        .authorizeHttpRequests(auth -> auth.requestMatchers(PUBLIC_ENPOINTS)
+            .permitAll()
+            .anyRequest()
+            .authenticated())
+        .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+        .authenticationManager(authenticationManager());
 
-		return http.build();
-	}
+    return http.build();
+  }
 
-	@Bean
-	public AuthenticationManager authenticationManager() {
+  @Bean
+  public AuthenticationManager authenticationManager() {
 
-		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
+    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
 
-		authenticationProvider.setPasswordEncoder(passwordEncoder());
+    authenticationProvider.setPasswordEncoder(passwordEncoder());
 
-		return new ProviderManager(authenticationProvider);
+    return new ProviderManager(authenticationProvider);
 
-	}
+  }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
+  @Bean
+  public PasswordEncoder passwordEncoder() {
 
-		return new BCryptPasswordEncoder(12);
+    return new BCryptPasswordEncoder(12);
 
-	}
+  }
 
 }
