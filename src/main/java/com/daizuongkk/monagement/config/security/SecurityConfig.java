@@ -22,12 +22,11 @@ import lombok.experimental.FieldDefaults;
 @Component
 @EnableWebSecurity
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
 
-  String[] PUBLIC_ENPOINTS = { "/auth/login", "/auth/refresh" };
+  private final String[] PUBLIC_ENPOINTS = { "/api/auth/login", "/auth/refresh" };
 
-  CustomUserDetailsService userDetailsService;
+  private final CustomUserDetailsService userDetailsService;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) {
