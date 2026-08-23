@@ -1,23 +1,24 @@
 package com.daizuongkk.monagement.exception;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.experimental.FieldDefaults;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 public class AppException extends RuntimeException {
-	private final ErrorCode errorCode;
+  private final ErrorCode errorCode;
 
-	public AppException(ErrorCode errorCode) {
-		super(errorCode.getMessage());
-		this.errorCode = errorCode;
+  private final Object[] args;
 
-	}
+  public AppException(ErrorCode errorCode) {
+    super(errorCode.name());
+    this.errorCode = errorCode;
+    this.args = new Object[0];
 
-	public AppException(ErrorCode errorCode, String message) {
-		super(message);
-		this.errorCode = errorCode;
-	}
+  }
+
+  public AppException(ErrorCode errorCode, Object... args) {
+    super(errorCode.name());
+    this.errorCode = errorCode;
+    this.args = args;
+  }
 
 }

@@ -13,11 +13,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import com.daizuongkk.monagement.util.MessageResolver;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@RequiredArgsConstructor
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+  private final MessageResolver messageResolver;
 
   @ExceptionHandler(AppException.class)
 
@@ -40,10 +46,19 @@ public class GlobalExceptionHandler {
         .map(FieldError::getDefaultMessage)
         .toList();
 
+    String message;
+    if (errors.isEmpty()) {
+      message = messageResolver.resolve("common.badrequest");
+    } else if (errors.size() == 1) {
+      message = errors.get(0);
+    } else {
+      message = errors.toString();
+    }
+
     ErrorResponse errorResponse = ErrorResponse.builder()
         .code(HttpStatus.BAD_REQUEST.value())
         .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-        .message(errors.size() > 1 ? errors.toString() : errors.get(0))
+        .message(message)
         .path(request.getDescription(false).replace("uri=", ""))
         .build();
 
@@ -66,7 +81,7 @@ public class GlobalExceptionHandler {
     ErrorResponse response = ErrorResponse.builder()
         .code(HttpStatus.BAD_REQUEST.value())
         .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-        .message("Required header '" + exception.getHeaderName() + "' is missing")
+        .message(messageResolver.resolve("common.header.missing"))
         .path(request.getDescription(false).replace("uri=", ""))
         .build();
 
@@ -86,7 +101,7 @@ public class GlobalExceptionHandler {
   private ErrorResponse buildErrorCodeResponse(ErrorCode errorCode, WebRequest request) {
     return ErrorResponse.builder()
         .code(errorCode.getCode())
-        .message(errorCode.getMessage())
+        .message(messageResolver.resolve(errorCode.getMessage()))
         .error(errorCode.getHttpStatus().getReasonPhrase())
         .path(request.getDescription(false).replace("uri=", ""))
         .build();
