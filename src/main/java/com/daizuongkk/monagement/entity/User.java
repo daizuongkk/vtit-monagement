@@ -4,8 +4,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -26,22 +28,24 @@ import lombok.Setter;
 @AllArgsConstructor
 public class User extends BaseEntity implements UserDetails {
 
+  @Column(nullable = false, unique = true)
   private String username;
 
+  @Column(nullable = false)
   private String password;
 
-  @Enumerated(EnumType.STRING)
-  private List<Role> role;
+  @Column(nullable = false, unique = true)
+  private String email;
 
-  @Builder.Default
-  private Boolean deleted = false;
+  @Enumerated(EnumType.STRING)
+  private Role role;
 
   @OneToOne(mappedBy = "user")
   private Profile profile;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of();
+    return List.of(new SimpleGrantedAuthority(role.name()));
   }
 
 }

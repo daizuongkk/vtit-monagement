@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daizuongkk.monagement.dto.request.LoginRequest;
+import com.daizuongkk.monagement.dto.request.RegisterRequest;
 import com.daizuongkk.monagement.dto.response.ApiResponse;
 import com.daizuongkk.monagement.dto.response.AuthenticationResponse;
+import com.daizuongkk.monagement.dto.response.UserResponse;
 import com.daizuongkk.monagement.service.AuthService;
+import com.daizuongkk.monagement.util.MessageResolver;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +24,29 @@ public class AuthController {
 
   private final AuthService authService;
 
+  private final MessageResolver messageResolver;
+
   @PostMapping("/login")
   ResponseEntity<ApiResponse<AuthenticationResponse>> login(@Valid @RequestBody LoginRequest request) {
+
     var response = authService.login(request);
 
     return ResponseEntity.ok(ApiResponse.<AuthenticationResponse>builder()
         .data(response)
-        .message("Login successfully")
+        .message(messageResolver.resolve("auth.login.success"))
         .build());
+  }
+
+  @PostMapping("/register")
+  public ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody RegisterRequest request) {
+
+    var response = authService.register(request);
+
+    return ResponseEntity
+        .ok(ApiResponse.<UserResponse>builder()
+            .data(response)
+            .message(messageResolver.resolve("auth.register.success"))
+            .build());
   }
 
 }

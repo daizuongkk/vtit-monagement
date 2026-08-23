@@ -34,17 +34,23 @@ public class JwtService {
   public TokenResponse generateToken(Authentication authentication) {
 
     Instant now = Instant.now();
+
     JwsHeader jwsHeader = JwsHeader.with(MacAlgorithm.HS512).build();
+
     Instant expirationTime = now.plus(accessTokenTTL, ChronoUnit.SECONDS);
+
     JwtClaimsSet claims = JwtClaimsSet.builder()
         .issuer("self")
         .issuedAt(now)
         .expiresAt(expirationTime)
         .subject(authentication.getName())
         .build();
+
     JwtEncoderParameters encoderParameters = JwtEncoderParameters.from(jwsHeader,
         claims);
+
     Jwt jwt = encoder.encode(encoderParameters);
+
     return TokenResponse
         .builder()
         .token(jwt.getTokenValue())

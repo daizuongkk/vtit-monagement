@@ -8,13 +8,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.daizuongkk.monagement.dto.request.LoginRequest;
+import com.daizuongkk.monagement.dto.request.RegisterRequest;
 import com.daizuongkk.monagement.dto.response.AuthenticationResponse;
 import com.daizuongkk.monagement.dto.response.TokenResponse;
+import com.daizuongkk.monagement.dto.response.UserResponse;
 import com.daizuongkk.monagement.service.AuthService;
+import com.daizuongkk.monagement.service.UserService;
 
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
 
 @Service
@@ -25,6 +28,8 @@ public class AuthServiceImpl implements AuthService {
   AuthenticationManager authenticationManager;
 
   JwtService jwtService;
+
+  UserService userService;
 
   @Override
   public AuthenticationResponse login(LoginRequest request) {
@@ -43,6 +48,14 @@ public class AuthServiceImpl implements AuthService {
         .refreshToken(refreshToken)
         .expiresIn(token.getExpiresIn())
         .build();
+  }
+
+  @Override
+  @Transactional
+  public UserResponse register(RegisterRequest request) {
+
+    // TODO send welcome email
+    return userService.create(request);
   }
 
   @Override

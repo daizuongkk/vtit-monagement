@@ -24,7 +24,7 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  private final String[] PUBLIC_ENPOINTS = { "/api/auth/login", "/auth/refresh" };
+  private final String[] PUBLIC_ENPOINTS = { "/api/auth/login", "/api/auth/refresh", "/api/auth/register" };
 
   private final CustomUserDetailsService userDetailsService;
 
