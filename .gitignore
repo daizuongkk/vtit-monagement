@@ -35,9 +35,15 @@ build/
 ### env ###
 .env
 
+# Ignore properties by default
 *.properties
+
+# But keep message files
+!src/main/resources/messages/
+!src/main/resources/messages/*.properties
 
 !*dev.example*
 !*.example.properties
 !application-dev.properties.example
 *.pem
+
