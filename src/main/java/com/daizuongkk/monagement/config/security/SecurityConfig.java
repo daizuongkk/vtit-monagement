@@ -27,6 +27,8 @@ public class SecurityConfig {
 
   private final CustomUserDetailsService userDetailsService;
 
+  private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) {
     http.csrf(AbstractHttpConfigurer::disable)
@@ -35,7 +37,10 @@ public class SecurityConfig {
             .anyRequest()
             .authenticated())
         .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+        .oauth2ResourceServer(
+            oauth2 -> oauth2
+                .jwt(Customizer.withDefaults())
+                .authenticationEntryPoint(authenticationEntryPoint));
     return http.build();
   }
 

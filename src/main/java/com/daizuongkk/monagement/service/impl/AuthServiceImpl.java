@@ -1,10 +1,13 @@
 package com.daizuongkk.monagement.service.impl;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import com.daizuongkk.monagement.dto.request.LoginRequest;
@@ -12,24 +15,25 @@ import com.daizuongkk.monagement.dto.request.RegisterRequest;
 import com.daizuongkk.monagement.dto.response.AuthenticationResponse;
 import com.daizuongkk.monagement.dto.response.TokenResponse;
 import com.daizuongkk.monagement.dto.response.UserResponse;
+import com.daizuongkk.monagement.entity.RevokedToken;
+import com.daizuongkk.monagement.repository.RevokedTokenRepository;
 import com.daizuongkk.monagement.service.AuthService;
 import com.daizuongkk.monagement.service.UserService;
 
 import jakarta.transaction.Transactional;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthServiceImpl implements AuthService {
 
-  AuthenticationManager authenticationManager;
+  private final AuthenticationManager authenticationManager;
 
-  JwtService jwtService;
+  private final JwtService jwtService;
 
-  UserService userService;
+  private final UserService userService;
+
+  private final RevokedTokenRepository revokedTokenRepository;
 
   @Override
   public AuthenticationResponse login(LoginRequest request) {
@@ -38,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
 
     Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
-    TokenResponse token = jwtService.generateToken(authentication);
+    TokenResponse token = jwtService.generate(authentication);
 
     String refreshToken = UUID.randomUUID().toString();
 
@@ -54,14 +58,24 @@ public class AuthServiceImpl implements AuthService {
   @Transactional
   public UserResponse register(RegisterRequest request) {
 
-    // TODO send welcome email
+    // TODO send welcome email using message queue
     return userService.create(request);
   }
 
   @Override
-  public boolean logout() {
+  public void logout(String token) {
+    Jwt jwt = jwtService.parse(token);
 
-    return true;
+    Instant issuedAt = jwt.getIssuedAt();
+    Instant expiresAt = jwt.getExpiresAt();
+    Instant now = Instant.now();
+    if (now.isBefore(issuedAt))
+      return;
+
+    revokedTokenRepository.save(RevokedToken.builder()
+        .jwtId(jwt.getId())
+        .expiresIn(Duration.between(issuedAt, expiresAt).toSeconds())
+        .build());
   }
 
 }

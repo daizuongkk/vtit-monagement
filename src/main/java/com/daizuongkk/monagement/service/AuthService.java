@@ -9,7 +9,7 @@ public interface AuthService {
 
   AuthenticationResponse login(LoginRequest request);
 
-  boolean logout();
+  void logout(String token);
 
   UserResponse register(RegisterRequest request);
 

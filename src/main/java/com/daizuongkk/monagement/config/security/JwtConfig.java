@@ -2,8 +2,12 @@ package com.daizuongkk.monagement.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 
@@ -21,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtConfig {
 
   private final RsaKeyProperties rsaKeys;
+  private final RevokedTokenValidator revokedTokenValidator;
 
   @Bean
   public JwtEncoder jwtEncoder() {
@@ -31,6 +36,16 @@ public class JwtConfig {
 
   @Bean
   public JwtDecoder jwtDecoder() {
-    return NimbusJwtDecoder.withPublicKey(rsaKeys.getPublicKey()).build();
+    NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withPublicKey(rsaKeys.getPublicKey()).build();
+
+    OAuth2TokenValidator<Jwt> defaultValidators = JwtValidators.createDefault();
+
+    OAuth2TokenValidator<Jwt> combinedValidator = new DelegatingOAuth2TokenValidator<>(
+        defaultValidators,
+        revokedTokenValidator);
+
+    jwtDecoder.setJwtValidator(combinedValidator);
+
+    return jwtDecoder;
   }
 }

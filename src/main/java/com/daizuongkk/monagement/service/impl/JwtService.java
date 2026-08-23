@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
@@ -27,16 +28,16 @@ import lombok.experimental.NonFinal;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtService {
 
-  @NonFinal
   @Value("${jwt.access-token.ttl}")
-  Long accessTokenTTL;
+  private Long accessTokenTTL;
 
-  JwtEncoder encoder;
+  private final JwtEncoder encoder;
 
-  public TokenResponse generateToken(Authentication authentication) {
+  private final JwtDecoder decoder;
+
+  public TokenResponse generate(Authentication authentication) {
 
     Instant now = Instant.now();
 
@@ -68,5 +69,9 @@ public class JwtService {
         .expiresIn(jwt.getExpiresAt())
         .build();
 
+  }
+
+  public Jwt parse(String token) {
+    return decoder.decode(token);
   }
 }
