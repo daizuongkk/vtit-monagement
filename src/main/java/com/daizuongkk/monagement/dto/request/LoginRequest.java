@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class LoginRequest {
 
-  @NotBlank(message = "{user.username.required}")
+  @NotBlank(message = "{username.required}")
   private String username;
 
-  @NotBlank(message = "{user.password.required}")
+  @NotBlank(message = "{password.required}")
   private String password;
 
 }
