@@ -13,7 +13,6 @@ import com.daizuongkk.monagement.dto.request.RegisterRequest;
 import com.daizuongkk.monagement.dto.response.ApiResponse;
 import com.daizuongkk.monagement.dto.response.AuthenticationResponse;
 import com.daizuongkk.monagement.dto.response.RegisterResponse;
-import com.daizuongkk.monagement.dto.response.UserResponse;
 import com.daizuongkk.monagement.service.AuthService;
 import com.daizuongkk.monagement.util.MessageResolver;
 

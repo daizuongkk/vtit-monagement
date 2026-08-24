@@ -2,10 +2,12 @@ package com.daizuongkk.monagement.service.impl;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -38,12 +40,16 @@ public class JwtService {
 
     Instant expirationTime = now.plus(accessTokenTTL, ChronoUnit.SECONDS);
 
+    List<String> roles = authentication.getAuthorities()
+        .stream()
+        .map(GrantedAuthority::getAuthority)
+        .toList();
     JwtClaimsSet claims = JwtClaimsSet.builder()
         .issuer("dzkk")
         .issuedAt(now)
         .expiresAt(expirationTime)
         .subject(authentication.getName())
-        .claim("role", authentication.getAuthorities())
+        .claim("role", roles)
         .id(UUID.randomUUID().toString())
         .build();
 

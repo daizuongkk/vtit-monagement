@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-@RedisHash("refreshToken")
+@RedisHash("refreshTokens")
 public class RefreshToken {
 
   @Id

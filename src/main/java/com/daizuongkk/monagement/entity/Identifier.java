@@ -26,10 +26,10 @@ public class Identifier extends BaseEntity {
   private String value;
 
   @Builder.Default
-  private boolean primary = false;
+  private boolean isPrimary = false;
 
   @Builder.Default
-  private boolean verified = false;
+  private boolean isVerified = false;
 
   @ManyToOne
   private User user;

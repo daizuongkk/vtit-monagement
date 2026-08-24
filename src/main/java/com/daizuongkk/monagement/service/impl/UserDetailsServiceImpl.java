@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     String normalized = IdentifierResolver.normalize(type, rawIdentifier);
 
     Identifier identifier = identifierRepository
-        .findByTypeAndValue(type.toString(), normalized)
+        .findByTypeAndValue(type, normalized)
         .orElseThrow(() -> new UsernameNotFoundException(rawIdentifier));
 
     return identifier.getUser();

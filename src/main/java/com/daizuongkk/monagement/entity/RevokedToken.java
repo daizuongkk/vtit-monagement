@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@RedisHash("revokedToken")
+@RedisHash("revokedTokens")
 @Getter
 @Setter
 @Builder

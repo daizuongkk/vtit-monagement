@@ -49,15 +49,15 @@ public class IdentifierServiceImpl implements IdentifierService {
     IdentifierType identifierType = resolve(registerRequest.getIdentifier());
     String identifierValue = normalize(identifierType, registerRequest.getIdentifier());
 
-    Identifier toSave = Identifier.builder()
+    Identifier identifier = Identifier.builder()
         .user(user)
         .type(identifierType)
         .value(identifierValue)
-        .primary(isFirst)
-        .verified(false)
+        .isPrimary(isFirst)
+        .isPrimary(false)
         .build();
 
-    return identifierRepository.save(toSave);
+    return identifierRepository.save(identifier);
   }
 
   @Override

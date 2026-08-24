@@ -18,6 +18,7 @@ import com.daizuongkk.monagement.entity.Identifier;
 import com.daizuongkk.monagement.entity.RefreshToken;
 import com.daizuongkk.monagement.entity.RevokedToken;
 import com.daizuongkk.monagement.entity.User;
+import com.daizuongkk.monagement.entity.Identifier.IdentifierType;
 import com.daizuongkk.monagement.exception.AppException;
 import com.daizuongkk.monagement.exception.ErrorCode;
 import com.daizuongkk.monagement.repository.IdentifierRepository;
@@ -67,7 +68,9 @@ public class AuthServiceImpl implements AuthService {
   public RegisterResponse register(RegisterRequest request) {
 
     String identifierValue = request.getIdentifier();
-    boolean existed = identifierRepository.existsByTypeAndValue(identifierValue);
+    IdentifierType identifierType = identifierService.resolve(identifierValue);
+
+    boolean existed = identifierRepository.existsByTypeAndValue(identifierType, identifierValue);
 
     if (existed)
       throw new AppException(ErrorCode.IDENTIFIER_EXISTED);
