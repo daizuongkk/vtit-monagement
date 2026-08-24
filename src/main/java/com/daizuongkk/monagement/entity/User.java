@@ -31,11 +31,14 @@ public class User extends BaseEntity implements UserDetails {
   @Column(nullable = false, unique = true)
   private String username;
 
-  @Column(nullable = false)
-  private String password;
+  @Column(nullable = false, unique = true)
+  private String phone;
 
   @Column(nullable = false, unique = true)
   private String email;
+
+  @Column(nullable = false)
+  private String password;
 
   @Enumerated(EnumType.STRING)
   private Role role;

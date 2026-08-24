@@ -9,14 +9,9 @@ import lombok.Getter;
 @Getter
 public class RegisterRequest {
 
-  @NotBlank(message = "{username.required}")
-  @Size(min = 5, max = 30, message = "{username.length}")
-  @Pattern(regexp = "^[\\w]+$", message = "{username.invalid}")
-  private String username;
+  @NotBlank(message = "{identifier.required}")
 
-  @NotBlank(message = "email.required")
-  @Email(message = "email.invalid")
-  private String email;
+  private String identifier;
 
   @NotBlank(message = "{password.required}")
   @Size(min = 8, max = 64, message = "{password.length}")

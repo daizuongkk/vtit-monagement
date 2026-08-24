@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserResponse create(RegisterRequest registerRequest) {
 
-    if (userRepository.existsByUsername(registerRequest.getUsername())) {
+    if (userRepository.existsByUsername(registerRequest.getIdentifier())) {
       throw new AppException(ErrorCode.USERNAME_EXISTED);
     }
 
