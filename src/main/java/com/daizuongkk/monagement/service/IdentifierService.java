@@ -1,18 +1,17 @@
 package com.daizuongkk.monagement.service;
 
-import java.util.UUID;
-
+import com.daizuongkk.monagement.dto.request.RegisterRequest;
 import com.daizuongkk.monagement.entity.Identifier;
+import com.daizuongkk.monagement.entity.Identifier.IdentifierType;
+import com.daizuongkk.monagement.entity.User;
 
 /**
  * IdentifierService
  */
 public interface IdentifierService {
-  Identifier resolve(String value);
+  IdentifierType resolve(String value);
 
-  void ensureNotExists(Identifier identifier);
+  String normalize(IdentifierType type, String input);
 
-  Identifier create(UUID userId, Identifier identifier);
-
-  Identifier getByIdentifier(Identifier identifier);
+  Identifier create(User user, RegisterRequest registerRequest);
 }

@@ -1,8 +1,11 @@
 package com.daizuongkk.monagement.entity;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +14,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -28,16 +34,25 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseEntity implements UserDetails {
+public class User implements UserDetails {
 
-  @Column(nullable = false, unique = true)
-  private String username;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
 
   @Column(nullable = false)
   private String password;
 
   @Enumerated(EnumType.STRING)
   private Role role;
+
+  @CreatedDate
+  @Column(nullable = false, updatable = false)
+  private Instant createdAt;
+
+  @LastModifiedDate
+  @Column(nullable = false)
+  private Instant updatedAt;
 
   @OneToOne(mappedBy = "user")
   private Profile profile;
@@ -48,11 +63,7 @@ public class User extends BaseEntity implements UserDetails {
 
   @Override
   public String getUsername() {
-    return identifiers.stream()
-        .filter(Identifier::isPrimary)
-        .findFirst()
-        .map(Identifier::getValue)
-        .orElseThrow();
+    return this.id;
   }
 
   @Override

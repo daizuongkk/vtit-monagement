@@ -12,6 +12,7 @@ import com.daizuongkk.monagement.dto.request.LoginRequest;
 import com.daizuongkk.monagement.dto.request.RegisterRequest;
 import com.daizuongkk.monagement.dto.response.ApiResponse;
 import com.daizuongkk.monagement.dto.response.AuthenticationResponse;
+import com.daizuongkk.monagement.dto.response.RegisterResponse;
 import com.daizuongkk.monagement.dto.response.UserResponse;
 import com.daizuongkk.monagement.service.AuthService;
 import com.daizuongkk.monagement.util.MessageResolver;
@@ -40,11 +41,11 @@ public class AuthController {
   }
 
   @PostMapping("/register")
-  public ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody RegisterRequest request) {
+  public ResponseEntity<ApiResponse<RegisterResponse>> register(@Valid @RequestBody RegisterRequest request) {
 
     var response = authService.register(request);
     return ResponseEntity
-        .ok(ApiResponse.<UserResponse>builder()
+        .ok(ApiResponse.<RegisterResponse>builder()
             .data(response)
             .message(messageResolver.resolve("auth.register.success"))
             .build());

@@ -12,8 +12,9 @@ import org.springframework.stereotype.Service;
 import com.daizuongkk.monagement.dto.request.LoginRequest;
 import com.daizuongkk.monagement.dto.request.RegisterRequest;
 import com.daizuongkk.monagement.dto.response.AuthenticationResponse;
+import com.daizuongkk.monagement.dto.response.RegisterResponse;
 import com.daizuongkk.monagement.dto.response.TokenResponse;
-import com.daizuongkk.monagement.dto.response.UserResponse;
+import com.daizuongkk.monagement.entity.Identifier;
 import com.daizuongkk.monagement.entity.RefreshToken;
 import com.daizuongkk.monagement.entity.RevokedToken;
 import com.daizuongkk.monagement.entity.User;
@@ -23,6 +24,7 @@ import com.daizuongkk.monagement.repository.IdentifierRepository;
 import com.daizuongkk.monagement.repository.RevokedTokenRepository;
 import com.daizuongkk.monagement.service.AuthService;
 import com.daizuongkk.monagement.service.IdentifierService;
+import com.daizuongkk.monagement.service.RefreshTokenService;
 import com.daizuongkk.monagement.service.UserService;
 
 import jakarta.transaction.Transactional;
@@ -38,6 +40,7 @@ public class AuthServiceImpl implements AuthService {
   private final RevokedTokenRepository revokedTokenRepository;
   private final IdentifierRepository identifierRepository;
   private final IdentifierService identifierService;
+  private final RefreshTokenService refreshTokenService;
 
   @Override
   public AuthenticationResponse login(LoginRequest request) {
@@ -49,10 +52,7 @@ public class AuthServiceImpl implements AuthService {
 
     User user = (User) authentication.getPrincipal();
 
-    RefreshToken refreshToken = RefreshToken.builder()
-        .userId(user.getId())
-        .expiresIn(null)
-        .build();
+    RefreshToken refreshToken = refreshTokenService.create(user);
 
     return AuthenticationResponse
         .builder()
@@ -64,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   @Transactional
-  public UserResponse register(RegisterRequest request) {
+  public RegisterResponse register(RegisterRequest request) {
 
     String identifierValue = request.getIdentifier();
     boolean existed = identifierRepository.existsByTypeAndValue(identifierValue);
@@ -72,8 +72,16 @@ public class AuthServiceImpl implements AuthService {
     if (existed)
       throw new AppException(ErrorCode.IDENTIFIER_EXISTED);
 
-    // TODO send welcome email using message queue
-    return userService.create(request);
+    User user = userService.create(request);
+
+    Identifier identifier = identifierService.create(user, request);
+
+    return RegisterResponse.builder()
+        .userId(user.getId())
+        .identifier(identifier.getValue())
+        .identifierType(identifier.getType())
+        .createdAt(identifier.getCreatedAt())
+        .build();
   }
 
   @Override

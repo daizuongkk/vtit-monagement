@@ -25,7 +25,8 @@ public class Identifier extends BaseEntity {
 
   private String value;
 
-  private boolean primary;
+  @Builder.Default
+  private boolean primary = false;
 
   @Builder.Default
   private boolean verified = false;

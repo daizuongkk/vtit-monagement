@@ -14,4 +14,6 @@ public interface IdentifierRepository extends JpaRepository<Identifier, Long> {
 
   boolean existsByTypeAndValue(String identifierValue);
 
+  boolean existsByUserId(String userId);
+
 }

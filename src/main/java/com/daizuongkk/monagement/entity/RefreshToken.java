@@ -11,13 +11,13 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-@RedisHash
+@RedisHash("refreshToken")
 public class RefreshToken {
 
   @Id
   private String value;
 
-  private Long userId;
+  private String userId;
 
   @TimeToLive
   private Long expiresIn;

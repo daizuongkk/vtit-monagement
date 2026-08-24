@@ -12,7 +12,7 @@ import lombok.Setter;
 public class ProfileResponse {
 
   private Long id;
-  private Long userId;
+  private String userId;
   private String firstName;
   private String lastName;
   private String address;
