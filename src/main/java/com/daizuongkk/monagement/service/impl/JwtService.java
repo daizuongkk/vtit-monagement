@@ -34,7 +34,7 @@ public class JwtService {
 
   private final JwtDecoder decoder;
 
-  public TokenResponse generate(Authentication authentication) {
+  public TokenResponse generateToken(Authentication authentication) {
 
     Instant now = Instant.now();
 
@@ -42,16 +42,12 @@ public class JwtService {
 
     Instant expirationTime = now.plus(accessTokenTTL, ChronoUnit.SECONDS);
 
-    User user = (User) authentication.getPrincipal();
-    if (Objects.isNull(user))
-      throw new AppException(ErrorCode.UNAUTHENTICATED);
-
     JwtClaimsSet claims = JwtClaimsSet.builder()
-        .issuer("self")
+        .issuer("dzkk")
         .issuedAt(now)
         .expiresAt(expirationTime)
         .subject(authentication.getName())
-        .claim("role", user.getRole())
+        .claim("role", authentication.getAuthorities())
         .id(UUID.randomUUID().toString())
         .build();
 

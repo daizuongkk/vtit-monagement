@@ -15,7 +15,9 @@ import lombok.Setter;
 public class RefreshToken {
 
   @Id
-  private String jwtId;
+  private String value;
+
+  private Long userId;
 
   @TimeToLive
   private Long expiresIn;

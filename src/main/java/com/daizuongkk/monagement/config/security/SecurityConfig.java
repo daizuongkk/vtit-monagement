@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.daizuongkk.monagement.service.impl.CustomUserDetailsService;
+import com.daizuongkk.monagement.service.impl.UserDetailsServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +25,7 @@ public class SecurityConfig {
 
   private final String[] PUBLIC_ENPOINTS = { "/api/auth/login", "/api/auth/refresh", "/api/auth/register" };
 
-  private final CustomUserDetailsService userDetailsService;
+  private final UserDetailsServiceImpl userDetailsService;
 
   private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 

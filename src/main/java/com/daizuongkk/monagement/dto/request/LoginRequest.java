@@ -7,7 +7,7 @@ import lombok.Getter;
 public class LoginRequest {
 
   @NotBlank(message = "{username.required}")
-  private String username;
+  private String identifier;
 
   @NotBlank(message = "{password.required}")
   private String password;

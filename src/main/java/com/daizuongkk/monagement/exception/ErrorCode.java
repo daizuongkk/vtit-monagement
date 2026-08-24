@@ -25,6 +25,10 @@ public enum ErrorCode {
   USER_NOT_FOUND(3000, "user.notfound", HttpStatus.NOT_FOUND),
   USERNAME_EXISTED(3001, "auth.username.duplicate", HttpStatus.CONFLICT),
 
+  IDENTIFIER_EXISTED(3002, "auth.identifier.duplicate", HttpStatus.CONFLICT),
+
+  INVALID_PHONE_NUMBER(3002, "phone.number.invalid", HttpStatus.BAD_REQUEST)
+
   ;
 
   private final int code;

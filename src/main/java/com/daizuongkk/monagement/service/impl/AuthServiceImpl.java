@@ -2,7 +2,6 @@ package com.daizuongkk.monagement.service.impl;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.UUID;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,9 +14,15 @@ import com.daizuongkk.monagement.dto.request.RegisterRequest;
 import com.daizuongkk.monagement.dto.response.AuthenticationResponse;
 import com.daizuongkk.monagement.dto.response.TokenResponse;
 import com.daizuongkk.monagement.dto.response.UserResponse;
+import com.daizuongkk.monagement.entity.RefreshToken;
 import com.daizuongkk.monagement.entity.RevokedToken;
+import com.daizuongkk.monagement.entity.User;
+import com.daizuongkk.monagement.exception.AppException;
+import com.daizuongkk.monagement.exception.ErrorCode;
+import com.daizuongkk.monagement.repository.IdentifierRepository;
 import com.daizuongkk.monagement.repository.RevokedTokenRepository;
 import com.daizuongkk.monagement.service.AuthService;
+import com.daizuongkk.monagement.service.IdentifierService;
 import com.daizuongkk.monagement.service.UserService;
 
 import jakarta.transaction.Transactional;
@@ -28,28 +33,31 @@ import lombok.RequiredArgsConstructor;
 public class AuthServiceImpl implements AuthService {
 
   private final AuthenticationManager authenticationManager;
-
   private final JwtService jwtService;
-
   private final UserService userService;
-
   private final RevokedTokenRepository revokedTokenRepository;
+  private final IdentifierRepository identifierRepository;
+  private final IdentifierService identifierService;
 
   @Override
   public AuthenticationResponse login(LoginRequest request) {
 
-    var authenticationToken = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
+    var authenticationToken = new UsernamePasswordAuthenticationToken(request.getIdentifier(), request.getPassword());
 
     Authentication authentication = authenticationManager.authenticate(authenticationToken);
+    TokenResponse token = jwtService.generateToken(authentication);
 
-    TokenResponse token = jwtService.generate(authentication);
+    User user = (User) authentication.getPrincipal();
 
-    String refreshToken = UUID.randomUUID().toString();
+    RefreshToken refreshToken = RefreshToken.builder()
+        .userId(user.getId())
+        .expiresIn(null)
+        .build();
 
     return AuthenticationResponse
         .builder()
         .accessToken(token.getToken())
-        .refreshToken(refreshToken)
+        .refreshToken(refreshToken.getValue())
         .expiresIn(token.getExpiresIn())
         .build();
   }
@@ -57,6 +65,12 @@ public class AuthServiceImpl implements AuthService {
   @Override
   @Transactional
   public UserResponse register(RegisterRequest request) {
+
+    String identifierValue = request.getIdentifier();
+    boolean existed = identifierRepository.existsByTypeAndValue(identifierValue);
+
+    if (existed)
+      throw new AppException(ErrorCode.IDENTIFIER_EXISTED);
 
     // TODO send welcome email using message queue
     return userService.create(request);

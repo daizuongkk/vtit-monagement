@@ -11,6 +11,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -31,12 +33,6 @@ public class User extends BaseEntity implements UserDetails {
   @Column(nullable = false, unique = true)
   private String username;
 
-  @Column(nullable = false, unique = true)
-  private String phone;
-
-  @Column(nullable = false, unique = true)
-  private String email;
-
   @Column(nullable = false)
   private String password;
 
@@ -46,9 +42,21 @@ public class User extends BaseEntity implements UserDetails {
   @OneToOne(mappedBy = "user")
   private Profile profile;
 
+  @OneToMany
+  @JoinColumn
+  private List<Identifier> identifiers;
+
+  @Override
+  public String getUsername() {
+    return identifiers.stream()
+        .filter(Identifier::isPrimary)
+        .findFirst()
+        .map(Identifier::getValue)
+        .orElseThrow();
+  }
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return List.of(new SimpleGrantedAuthority(role.name()));
   }
-
 }

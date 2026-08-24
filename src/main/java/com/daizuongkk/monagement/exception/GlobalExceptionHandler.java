@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import com.daizuongkk.monagement.util.MessageResolver;
+import com.google.i18n.phonenumbers.NumberParseException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,13 @@ public class GlobalExceptionHandler {
     ErrorResponse response = buildErrorCodeResponse(exception.getErrorCode(), request);
 
     return ResponseEntity.status(exception.getErrorCode().getHttpStatus()).body(response);
+
+  }
+
+  @ExceptionHandler(NumberParseException.class)
+  public ResponseEntity<ErrorResponse> handleNumberParseException(NumberParseException ex, WebRequest request) {
+    ErrorResponse response = buildErrorCodeResponse(ErrorCode.INVALID_PHONE_NUMBER, request);
+    return ResponseEntity.status(ErrorCode.INVALID_PHONE_NUMBER.getCode()).body(response);
 
   }
 
