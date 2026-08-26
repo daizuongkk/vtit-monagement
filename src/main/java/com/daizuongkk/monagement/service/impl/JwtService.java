@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtService {
 
-  @Value("${jwt.access-token.ttl}")
+  @Value("${jwt.access-token.ttl:300}")
   private Long accessTokenTTL;
 
   private final JwtEncoder encoder;

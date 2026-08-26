@@ -21,13 +21,17 @@ public enum ErrorCode {
   INVALID_REFRESH_TOKEN(1005, "auth.refreshtoken.invalid", HttpStatus.UNAUTHORIZED),
   REFRESH_TOKEN_EXPIRED(1006, "auth.refreshtoken.expired", HttpStatus.UNAUTHORIZED),
   ACCESS_DENIED(1007, "auth.access.denied", HttpStatus.FORBIDDEN),
+  IDENTIFIER_NOT_VERIFIED(1008, "auth.identifier.unverified", HttpStatus.UNAUTHORIZED),
 
   USER_NOT_FOUND(3000, "user.notfound", HttpStatus.NOT_FOUND),
   USERNAME_EXISTED(3001, "auth.username.duplicate", HttpStatus.CONFLICT),
 
   IDENTIFIER_EXISTED(3002, "auth.identifier.duplicate", HttpStatus.CONFLICT),
+  IDENTIFIER_NOT_FOUND(3004, "identifier.notfound", HttpStatus.NOT_FOUND),
 
-  INVALID_PHONE_NUMBER(3002, "phone.number.invalid", HttpStatus.BAD_REQUEST)
+  INVALID_PHONE_NUMBER(3003, "phone.number.invalid", HttpStatus.BAD_REQUEST),
+
+  INVALID_OTP(3005, "otp.invalid", HttpStatus.BAD_REQUEST);
 
   ;
 

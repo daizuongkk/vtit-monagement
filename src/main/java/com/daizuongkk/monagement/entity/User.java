@@ -23,6 +23,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,11 +38,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+
 public class User implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
+
+  @Transient
+  private Identifier authenticationIdentifier;
 
   @Column(nullable = false)
   private String password;
@@ -60,8 +65,8 @@ public class User implements UserDetails {
   @OneToOne(mappedBy = "user")
   private Profile profile;
 
-  @OneToMany
-  @JoinColumn
+  @OneToMany(mappedBy = "user")
+  @Column(nullable = false)
   private List<Identifier> identifiers;
 
   @Override

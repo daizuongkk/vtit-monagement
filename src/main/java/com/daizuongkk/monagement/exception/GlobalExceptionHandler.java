@@ -110,7 +110,7 @@ public class GlobalExceptionHandler {
     return ErrorResponse.builder()
         .code(errorCode.getCode())
         .message(messageResolver.resolve(errorCode.getMessage()))
-        .error(errorCode.getHttpStatus().getReasonPhrase())
+        .error(errorCode.name())
         .path(request.getDescription(false).replace("uri=", ""))
         .build();
   }

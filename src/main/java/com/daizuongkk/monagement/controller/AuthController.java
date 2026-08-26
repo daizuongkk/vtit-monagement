@@ -60,4 +60,11 @@ public class AuthController {
         .build());
   }
 
+  @PostMapping("/verify")
+  public ResponseEntity<ApiResponse<AuthenticationResponse>> verify(@RequestBody String verificationToken) {
+    // TODO: process POST request
+
+    return null;
+  }
+
 }

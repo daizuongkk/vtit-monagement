@@ -6,9 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.daizuongkk.monagement.entity.Identifier;
-import com.daizuongkk.monagement.entity.Identifier.IdentifierType;
-import com.daizuongkk.monagement.repository.IdentifierRepository;
-import com.daizuongkk.monagement.util.IdentifierResolver;
+import com.daizuongkk.monagement.entity.User;
+import com.daizuongkk.monagement.service.IdentifierService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,18 +15,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-  private final IdentifierRepository identifierRepository;
+  private final IdentifierService identifierService;
 
   @Override
-  public UserDetails loadUserByUsername(String rawIdentifier) throws UsernameNotFoundException {
-    IdentifierType type = IdentifierResolver.resolve(rawIdentifier);
-    String normalized = IdentifierResolver.normalize(type, rawIdentifier);
+  public UserDetails loadUserByUsername(String identifierValue) throws UsernameNotFoundException {
 
-    Identifier identifier = identifierRepository
-        .findByTypeAndValue(type, normalized)
-        .orElseThrow(() -> new UsernameNotFoundException(rawIdentifier));
+    Identifier identifier = identifierService.getByValue(identifierValue)
+        .orElseThrow(() -> new UsernameNotFoundException(identifierValue));
 
-    return identifier.getUser();
+    User user = identifier.getUser();
+
+    user.setAuthenticationIdentifier(identifier);
+
+    return user;
   }
 
 }

@@ -18,7 +18,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
   private final RefreshTokenRepository refreshTokenRepository;
 
-  @Value("${jwt.refresh-token.ttl}")
+  @Value("${jwt.refresh-token.ttl:604800}")
   private Long refreshTokenTTL;
 
   @Override
